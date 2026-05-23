@@ -46,6 +46,98 @@ const concepts = atlas.concepts.map((concept) => ({
     .toLowerCase(),
 }));
 
+const MAP_REGIONS = [
+  {
+    id: "operations-island",
+    label: "Operations Island",
+    strand: "operations",
+    path:
+      "M20 23 C25 14 38 12 47 17 C55 22 55 35 47 42 C39 49 25 49 17 42 C9 35 12 28 20 23 Z",
+  },
+  {
+    id: "number-cove",
+    label: "Number Cove",
+    strand: "number-sense",
+    path:
+      "M4 22 C8 12 19 8 28 13 C36 18 36 30 27 37 C18 44 5 41 2 31 C1 27 2 24 4 22 Z",
+  },
+  {
+    id: "fraction-fjord",
+    label: "Fraction Fjord",
+    strand: "fractions-ratios",
+    path:
+      "M51 10 C63 4 80 7 88 17 C96 27 94 43 84 51 C72 60 56 56 49 45 C42 34 42 17 51 10 Z",
+  },
+  {
+    id: "measurement-bay",
+    label: "Measurement Bay",
+    strand: "measurement",
+    path:
+      "M4 35 C13 27 28 31 34 42 C39 53 31 68 18 69 C6 71 -1 61 1 49 C1 43 2 38 4 35 Z",
+  },
+  {
+    id: "algebra-keys",
+    label: "Algebra Keys",
+    strand: "algebra",
+    path:
+      "M31 67 C41 57 59 58 68 68 C76 78 72 94 58 99 C45 104 30 98 25 86 C23 78 25 72 31 67 Z",
+  },
+  {
+    id: "geometry-shores",
+    label: "Geometry Shores",
+    strand: "geometry",
+    path:
+      "M7 77 C18 69 34 71 43 81 C50 90 42 101 28 102 C14 104 3 98 1 89 C0 84 2 80 7 77 Z",
+  },
+  {
+    id: "data-reef",
+    label: "Data Reef",
+    strand: "data-chance",
+    path:
+      "M78 11 C88 7 99 15 101 27 C103 39 96 51 85 55 C75 59 67 51 69 39 C70 27 70 16 78 11 Z",
+  },
+  {
+    id: "story-summit",
+    label: "Story Summit",
+    strand: "problem-solving",
+    path:
+      "M41 38 C51 31 66 35 70 47 C74 59 64 70 51 70 C39 71 30 62 32 51 C33 45 36 41 41 38 Z",
+  },
+];
+
+const MAP_ROUTES = [
+  {
+    id: "arithmetic-route",
+    label: "Arithmetic route",
+    path: "M14 18 C21 23 26 27 27 28 C30 22 37 20 40 20 C34 29 28 37 25 45 C29 50 34 52 38 52 C42 49 46 46 49 45",
+  },
+  {
+    id: "fraction-route",
+    label: "Fraction route",
+    path: "M54 25 C59 21 63 18 66 18 C69 24 73 28 77 30 C80 36 82 43 82 49 C79 54 76 59 73 62",
+  },
+  {
+    id: "algebra-route",
+    label: "Algebra route",
+    path: "M33 76 C38 77 43 79 46 80 C51 78 56 78 60 79 C65 76 69 76 72 77 C78 75 84 74 88 74",
+  },
+  {
+    id: "geometry-route",
+    label: "Geometry route",
+    path: "M20 88 C25 91 29 91 32 91 C39 92 44 92 49 92 C55 91 59 91 63 91 C69 89 74 88 78 88",
+  },
+  {
+    id: "everyday-route",
+    label: "Everyday route",
+    path: "M8 36 C12 47 15 56 18 60 C23 62 28 64 31 64 C40 63 50 62 57 61 C51 52 46 44 42 36",
+  },
+  {
+    id: "data-route",
+    label: "Data route",
+    path: "M88 18 C91 24 92 31 92 36 C92 43 91 50 90 56 C85 58 78 60 73 62",
+  },
+];
+
 const state = {
   query: "",
   strand: "all",
@@ -265,30 +357,73 @@ function routeButton(route) {
 
 function renderMap(visible) {
   const visibleIds = new Set(visible.map((concept) => concept.id));
-  const linePairs = new Set();
   refs.conceptMap.innerHTML = "";
 
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  svg.setAttribute("class", "map-lines");
+  svg.setAttribute("class", "map-art");
   svg.setAttribute("viewBox", "0 0 100 100");
   svg.setAttribute("preserveAspectRatio", "none");
+  svg.setAttribute("aria-hidden", "true");
 
-  for (const concept of concepts) {
-    for (const connectionId of concept.connections) {
-      const connected = conceptsById.get(connectionId);
-      if (!connected) continue;
-      const key = [concept.id, connected.id].sort().join(":");
-      if (linePairs.has(key)) continue;
-      linePairs.add(key);
-      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-      line.setAttribute("class", "map-line");
-      line.setAttribute("x1", concept.map.x);
-      line.setAttribute("y1", concept.map.y);
-      line.setAttribute("x2", connected.map.x);
-      line.setAttribute("y2", connected.map.y);
-      svg.append(line);
-    }
+  const waterGroup = createSvg("g", { class: "map-watermarks" });
+  for (const wave of [
+    [8, 15],
+    [21, 10],
+    [35, 13],
+    [64, 9],
+    [94, 12],
+    [12, 83],
+    [84, 95],
+    [96, 74],
+    [4, 56],
+  ]) {
+    waterGroup.append(
+      createSvg("path", {
+        class: "map-wave",
+        d: `M${wave[0] - 2} ${wave[1]} C${wave[0] - 1} ${wave[1] - 1.2}, ${wave[0] + 1} ${wave[1] + 1.2}, ${wave[0] + 2} ${wave[1]} C${wave[0] + 3} ${wave[1] - 1.2}, ${wave[0] + 5} ${wave[1] + 1.2}, ${wave[0] + 6} ${wave[1]}`,
+      }),
+    );
   }
+  svg.append(waterGroup);
+
+  const regionGroup = createSvg("g", { class: "map-regions" });
+  for (const region of MAP_REGIONS) {
+    const strand = strandsById.get(region.strand);
+    const island = createSvg("path", {
+      class: `map-island${state.strand !== "all" && state.strand !== region.strand ? " is-muted" : ""}`,
+      d: region.path,
+    });
+    island.style.setProperty("--strand-color", strand.color);
+    regionGroup.append(island);
+  }
+  svg.append(regionGroup);
+
+  const routeGroup = createSvg("g", { class: "map-routes" });
+  for (const route of MAP_ROUTES) {
+    routeGroup.append(
+      createSvg("path", {
+        class: "map-route",
+        d: route.path,
+      }),
+    );
+  }
+  svg.append(routeGroup);
+
+  for (const region of MAP_REGIONS) {
+    const strand = strandsById.get(region.strand);
+    const match = region.path.match(/M([\d.-]+) ([\d.-]+)/);
+    const labelPosition = labelPositionForRegion(region.id);
+    const label = createSvg("text", {
+      class: "map-region-label",
+      x: labelPosition.x,
+      y: labelPosition.y,
+      "text-anchor": "middle",
+    });
+    label.style.setProperty("--strand-color", strand.color);
+    label.textContent = region.label;
+    if (match) regionGroup.append(label);
+  }
+
   refs.conceptMap.append(svg);
 
   for (const concept of concepts) {
@@ -308,6 +443,27 @@ function renderMap(visible) {
   }
 
   refs.mapCount.textContent = `${visible.length} shown`;
+}
+
+function createSvg(tagName, attrs = {}) {
+  const element = document.createElementNS("http://www.w3.org/2000/svg", tagName);
+  for (const [name, value] of Object.entries(attrs)) {
+    element.setAttribute(name, value);
+  }
+  return element;
+}
+
+function labelPositionForRegion(id) {
+  return {
+    "operations-island": { x: 32, y: 18 },
+    "number-cove": { x: 16, y: 14 },
+    "fraction-fjord": { x: 69, y: 12 },
+    "measurement-bay": { x: 17, y: 38 },
+    "algebra-keys": { x: 49, y: 72 },
+    "geometry-shores": { x: 24, y: 84 },
+    "data-reef": { x: 88, y: 16 },
+    "story-summit": { x: 52, y: 42 },
+  }[id];
 }
 
 function renderConceptCards(visible) {

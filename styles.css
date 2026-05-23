@@ -325,10 +325,9 @@ h3 {
   border-radius: var(--radius);
   overflow: hidden;
   background:
-    radial-gradient(circle at 18% 22%, rgba(19, 166, 161, 0.18), transparent 17%),
-    radial-gradient(circle at 77% 24%, rgba(204, 92, 168, 0.13), transparent 18%),
-    radial-gradient(circle at 52% 84%, rgba(217, 164, 33, 0.18), transparent 23%),
-    linear-gradient(135deg, #fbfdff 0%, #eef8f8 100%);
+    radial-gradient(circle at 12% 12%, rgba(255, 255, 255, 0.9), transparent 16%),
+    radial-gradient(circle at 76% 22%, rgba(255, 255, 255, 0.7), transparent 20%),
+    linear-gradient(135deg, #d7f1f7 0%, #bfe7ee 48%, #a7dce8 100%);
 }
 
 .concept-map::before {
@@ -336,12 +335,23 @@ h3 {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(rgba(21, 35, 56, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(21, 35, 56, 0.035) 1px, transparent 1px);
+    linear-gradient(rgba(21, 35, 56, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(21, 35, 56, 0.028) 1px, transparent 1px);
   background-size: 42px 42px;
 }
 
-.map-lines {
+.concept-map::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 17% 84%, rgba(255, 255, 255, 0.28), transparent 18%),
+    radial-gradient(ellipse at 88% 8%, rgba(255, 255, 255, 0.28), transparent 14%),
+    radial-gradient(ellipse at 4% 58%, rgba(255, 255, 255, 0.22), transparent 12%);
+  pointer-events: none;
+}
+
+.map-art {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -349,15 +359,58 @@ h3 {
   pointer-events: none;
 }
 
-.map-line {
-  stroke: rgba(21, 35, 56, 0.18);
+.map-watermarks,
+.map-regions,
+.map-routes {
+  pointer-events: none;
+}
+
+.map-wave {
+  fill: none;
+  opacity: 0.38;
+  stroke: #4faec3;
   stroke-linecap: round;
-  stroke-width: 1.4;
+  stroke-width: 0.65;
+}
+
+.map-island {
+  fill: color-mix(in srgb, var(--strand-color), white 40%);
+  opacity: 0.88;
+  stroke: #f5dfab;
+  stroke-linejoin: round;
+  stroke-width: 4.6;
+  paint-order: stroke fill;
+  filter: drop-shadow(0 2px 0 rgba(21, 35, 56, 0.14)) drop-shadow(0 10px 10px rgba(21, 35, 56, 0.1));
+}
+
+.map-island.is-muted {
+  opacity: 0.26;
+}
+
+.map-route {
+  fill: none;
+  opacity: 0.74;
+  stroke: rgba(255, 255, 255, 0.94);
+  stroke-dasharray: 1.2 2.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.1;
+  filter: drop-shadow(0 1px 0 rgba(21, 35, 56, 0.18));
+}
+
+.map-region-label {
+  fill: color-mix(in srgb, var(--strand-color), #12213a 45%);
+  font-family: var(--font);
+  font-size: 2.2px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  opacity: 0.74;
+  text-shadow: 0 0.7px 0 rgba(255, 255, 255, 0.7);
 }
 
 .map-node {
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   display: grid;
   min-width: 46px;
   min-height: 42px;
@@ -367,8 +420,14 @@ h3 {
   border-radius: var(--radius);
   background: white;
   color: var(--ink);
-  box-shadow: 5px 5px 0 color-mix(in srgb, var(--strand-color), transparent 42%);
+  box-shadow:
+    0 0 0 4px rgba(255, 255, 255, 0.58),
+    5px 5px 0 color-mix(in srgb, var(--strand-color), transparent 42%);
   font-weight: 900;
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease,
+    background-color 160ms ease;
 }
 
 .map-node:hover,
@@ -392,6 +451,7 @@ h3 {
   transform: translateX(-50%);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 4px 12px rgba(21, 35, 56, 0.08);
   color: var(--ink);
   padding: 4px 7px;
   font-size: 0.72rem;

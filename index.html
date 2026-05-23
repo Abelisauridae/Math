@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A GitHub-ready math atlas for children ages 8-12, covering arithmetic, algebra, geometry, fractions, data, measurement, and problem solving."
+    />
+    <title>Math Atlas for Kids</title>
+    <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./data/math-concepts.js"></script>
+    <script defer src="./app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#atlas">Skip to atlas</a>
+
+    <div class="site-shell">
+      <header class="topbar" aria-label="Primary">
+        <a class="brand" href="#top" aria-label="Math Atlas home">
+          <span class="brand-mark">M</span>
+          <span>Math Atlas</span>
+        </a>
+        <nav class="topnav" aria-label="Page sections">
+          <a href="#atlas">Atlas</a>
+          <a href="#routes">Routes</a>
+          <a href="#practice">Practice</a>
+          <a href="#github">GitHub</a>
+        </nav>
+      </header>
+
+      <main id="top">
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <h1 id="hero-title"><span>Math</span><span>Atlas</span></h1>
+            <p>
+              Explore the big math ideas for ages 8-12 as a friendly map:
+              operations, fractions, algebra, geometry, measurement, data,
+              probability, money, time, and word problems.
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#atlas">Start exploring</a>
+              <button class="button button-secondary" id="surprise-button" type="button">
+                Surprise me
+              </button>
+            </div>
+            <div class="hero-stats" id="hero-stats" aria-label="Atlas summary"></div>
+          </div>
+
+          <section class="map-card" aria-labelledby="map-title">
+            <div class="map-heading">
+              <div>
+                <h2 id="map-title">Concept map</h2>
+                <p id="map-caption">Choose a region to open a concept.</p>
+              </div>
+              <span class="map-count" id="map-count">Loading</span>
+            </div>
+            <div class="concept-map" id="concept-map"></div>
+          </section>
+        </section>
+
+        <section class="controls-band" id="atlas" aria-labelledby="atlas-title">
+          <div>
+            <h2 id="atlas-title">Browse the atlas</h2>
+            <p id="atlas-caption">
+              Search, filter by strand, or follow a route through related ideas.
+            </p>
+          </div>
+
+          <div class="controls-grid">
+            <label class="field field-search">
+              <span>Search concepts</span>
+              <input
+                id="search-input"
+                type="search"
+                autocomplete="off"
+                placeholder="Try fractions, perimeter, variable, money..."
+              />
+            </label>
+
+            <label class="field">
+              <span>Level</span>
+              <select id="level-select">
+                <option value="all">All levels</option>
+                <option value="1">Level 1: foundation</option>
+                <option value="2">Level 2: building</option>
+                <option value="3">Level 3: stretching</option>
+                <option value="4">Level 4: challenge</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Route</span>
+              <select id="route-select">
+                <option value="all">All routes</option>
+              </select>
+            </label>
+
+            <button class="button button-secondary" id="reset-button" type="button">
+              Reset
+            </button>
+          </div>
+
+          <div class="strand-filters" id="strand-filters" aria-label="Filter by strand"></div>
+        </section>
+
+        <section class="atlas-layout" aria-label="Math atlas explorer">
+          <aside class="route-panel" id="routes" aria-labelledby="routes-title">
+            <div class="section-heading">
+              <h2 id="routes-title">Learning routes</h2>
+              <p>Pick a route when a child wants a guided path instead of free browsing.</p>
+            </div>
+            <div class="route-list" id="route-list"></div>
+          </aside>
+
+          <section class="results-panel" aria-live="polite">
+            <div class="results-heading">
+              <div>
+                <h2 id="results-title">Concepts</h2>
+                <p id="results-caption">Loading math concepts...</p>
+              </div>
+              <button class="button button-small" id="shuffle-button" type="button">
+                Shuffle cards
+              </button>
+            </div>
+            <div class="concept-grid" id="concept-grid"></div>
+          </section>
+
+          <aside class="detail-panel" aria-labelledby="detail-title">
+            <div class="detail-sticky">
+              <div class="detail-kicker" id="detail-kicker">Concept</div>
+              <h2 id="detail-title">Choose a concept</h2>
+              <div class="detail-content" id="detail-content"></div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="practice-band" id="practice" aria-labelledby="practice-title">
+          <div class="section-heading">
+            <h2 id="practice-title">Practice lab</h2>
+            <p>
+              Generate a quick practice prompt from the currently visible concepts,
+              then reveal a hint or answer.
+            </p>
+          </div>
+
+          <div class="practice-card">
+            <div>
+              <p class="practice-label" id="practice-concept">Practice prompt</p>
+              <h3 id="practice-question">Choose a concept or press New prompt.</h3>
+              <p id="practice-hint" class="practice-help" hidden></p>
+              <p id="practice-answer" class="practice-answer" hidden></p>
+            </div>
+            <div class="practice-actions">
+              <button class="button button-primary" id="new-practice-button" type="button">
+                New prompt
+              </button>
+              <button class="button button-secondary" id="hint-button" type="button">
+                Show hint
+              </button>
+              <button class="button button-secondary" id="answer-button" type="button">
+                Show answer
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer" id="github">
+        <div>
+          <h2>GitHub-ready static site</h2>
+          <p>
+            This atlas uses plain HTML, CSS, and JavaScript with no build step.
+            It can be hosted directly with GitHub Pages from the repository root.
+          </p>
+        </div>
+        <div class="footer-links">
+          <a href="./README.md">README</a>
+          <a href="./data/math-concepts.js">Concept data</a>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
